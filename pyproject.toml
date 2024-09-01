@@ -1,0 +1,7 @@
+[project]
+name = "dunamai-docker"
+version = "0.1.0"                                       # The version here is not relevant (not really used)
+description = "dunamai tool packaged as a docker image"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["dunamai>=1.22.0,<1.23.0"]
