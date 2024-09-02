@@ -23,7 +23,7 @@ version:
 	@$(MAKE) -s _version 2>&1 |tail -1
 
 test: build ## Test the docker image (locally)
-	$(DOCKER) run --rm $(IMAGE) -h |grep "^usage: dunamai" >/dev/null
+	$(DOCKER) run --rm -v `pwd`:/code $(IMAGE) from git --path /code
 	@echo "OK"
 
 uv.lock: $(call hash_deps,pyproject.toml)
