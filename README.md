@@ -22,7 +22,7 @@ You have to mount your git clone in to `/code` in the container.
 
 Example:
 
-`docker run --rm -v $(pwd):/code ghcr.io/fabien-marty/dunamai-docker:1.22 from git --path /code`
+`docker run --pull always --rm -v $(pwd):/code ghcr.io/fabien-marty/dunamai-docker:1.22 from git --path /code`
 
 ## Dev
 
