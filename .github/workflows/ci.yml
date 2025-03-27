@@ -33,7 +33,7 @@ jobs:
       - name: Compute version
         id: version
         run: |
-          export VERSION=`task version |awk -F '.' '{print $1"."$2"."$3}' |awk -F '-' '{print $1;}'`
+          export VERSION=`task version |grep "^VERSION::" |awk -F "VERSION::" '{print $2}' |awk -F '.' '{print $1"."$2"."$3}' |awk -F '-' '{print $1;}'`
           export VERSION2=`echo ${VERSION} |awk -F '.' '{print $1"."$2}'`
           echo "### Version: ${VERSION} 🚀" >>${GITHUB_STEP_SUMMARY}
           echo "### Version2: ${VERSION2} 🚀" >>${GITHUB_STEP_SUMMARY}
