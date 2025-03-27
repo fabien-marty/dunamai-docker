@@ -1,0 +1,47 @@
+version: '3'
+
+includes:
+  uv: .task/taskfiles/Taskfile-uv.yml
+  misc: 
+    taskfile: .task/taskfiles/Taskfile-misc.yml
+    flatten: true
+
+vars:
+  DEFAULT_IMAGE: 'docker.io/library/dunamai'
+  IMAGE: '{{ .IMAGE | default .DEFAULT_IMAGE }}'
+
+tasks:
+
+  version:
+    desc: "Compute the version of the project"
+    deps:
+      - uv:sync
+    silent: true
+    cmds:
+      - |
+          VERSION=$({{.UV}} run dunamai from any --style semver |sed 's/+/_/g')
+          echo "VERSION::$VERSION"
+
+  clean:
+    desc: "Clean the repository"
+    deps:
+      - uv:clean
+
+  install:
+    desc: "Install the venv" 
+    deps:
+      - uv:sync
+
+  build:
+    desc: "Build the docker image"
+    deps:
+      - uv:sync
+    cmds:
+      - docker build -t {{.IMAGE}} .
+
+  test:
+    desc: "Test the docker image"
+    deps:
+      - uv:sync
+    cmds:
+      - docker run --rm -v `pwd`:/code {{.IMAGE}} from git --path /code
