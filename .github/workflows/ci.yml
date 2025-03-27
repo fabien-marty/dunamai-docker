@@ -22,14 +22,18 @@ jobs:
         with:
           fetch-depth: 0 # we need this because fetch-tags=true and because of a GHA bug: https://github.com/actions/checkout/issues/1471
           fetch-tags: true
-      - name: Set up Python # not used for smartlink itself
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.12" 
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
       - name: Compute version
         id: version
         run: |
-          export VERSION=`make version |awk -F '.' '{print $1"."$2"."$3}' |awk -F '-' '{print $1;}'`
+          export VERSION=`task version |awk -F '.' '{print $1"."$2"."$3}' |awk -F '-' '{print $1;}'`
           export VERSION2=`echo ${VERSION} |awk -F '.' '{print $1"."$2}'`
           echo "### Version: ${VERSION} 🚀" >>${GITHUB_STEP_SUMMARY}
           echo "### Version2: ${VERSION2} 🚀" >>${GITHUB_STEP_SUMMARY}
@@ -44,16 +48,16 @@ jobs:
           fi
       - name: Tests
         run: |
-          make test
+          task test
       - name: Check dirty
         run: |
-          make no-dirty
+          task no-dirty
       - name: Clean
         run: |
-          make clean
+          task clean
       - name: Check dirty (after clean)
         run: |
-          make no-dirty
+          task no-dirty
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5

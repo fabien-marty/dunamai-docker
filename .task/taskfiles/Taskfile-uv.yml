@@ -1,0 +1,54 @@
+version: '3'
+
+vars:
+  UV: "{{.TASKFILE_DIR}}/.tmp/bin/uv"
+  UVX: "{{.TASKFILE_DIR}}/.tmp/bin/uvx"
+
+tasks:
+
+  install:
+    desc: "Install uv in a local temporary directory"
+    internal: true
+    status:
+      - "test -x {{.UV}}"
+    env:
+      UV_NO_MODIFY_PATH: 1
+      XDG_BIN_HOME: "{{ dir .UV}}"
+    cmds:
+      - mkdir -p `dirname {{.UV}}`
+      - wget -O install.sh https://astral.sh/uv/install.sh
+      - chmod +x install.sh
+      - ./install.sh
+      - rm -f install.sh
+
+  lock:
+    desc: "Lock the uv environment"
+    internal: true
+    deps:
+      - uv:install
+    cmds:
+      - "{{.UV}} lock"
+    sources:
+      - "pyproject.toml"
+    generates:
+      - "uv.lock"
+
+  env:
+    desc: "Sync the uv environment"
+    internal: true
+    deps: 
+      - uv:lock
+    cmds:
+      - "{{.UV}} sync --frozen"
+      - md5sum uv.lock >.venv/uv.lock.md5 
+    sources:
+      - "uv.lock"
+    generates:
+      - ".venv/uv.lock.md5"
+
+  clean:
+    internal: true
+    cmds:
+      - rm -f "{{.UV}}"
+      - rm -f "{{.UVX}}"
+      - rm -Rf .venv
