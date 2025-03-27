@@ -1,8 +1,9 @@
 version: '3'
 
 vars:
-  UV: "{{.TASKFILE_DIR}}/.tmp/bin/uv"
-  UVX: "{{.TASKFILE_DIR}}/.tmp/bin/uvx"
+  UV: "{{.ROOT_DIR}}/.tmp/bin/uv"
+  UVX: "{{.ROOT_DIR}}/.tmp/bin/uvx"
+  VENV: "{{.ROOT_DIR}}/.venv"
 
 tasks:
 
@@ -29,9 +30,9 @@ tasks:
     cmds:
       - "{{.UV}} lock"
     sources:
-      - "pyproject.toml"
+      - "{{.ROOT_DIR}}/pyproject.toml"
     generates:
-      - "uv.lock"
+      - "{{.ROOT_DIR}}/uv.lock"
 
   sync:
     desc: "Sync the uv environment"
@@ -40,15 +41,15 @@ tasks:
       - lock
     cmds:
       - "{{.UV}} sync --frozen"
-      - md5sum uv.lock >.venv/uv.lock.md5 
+      - md5sum uv.lock >{{.VENV}}/uv.lock.md5 
     sources:
-      - "uv.lock"
+      - "{{.ROOT_DIR}}/uv.lock"
     generates:
-      - ".venv/uv.lock.md5"
+      - "{{.VENV}}/uv.lock.md5"
 
   clean:
     internal: true
     cmds:
       - rm -f "{{.UV}}"
       - rm -f "{{.UVX}}"
-      - rm -Rf .venv
+      - rm -Rf {{.VENV}}
