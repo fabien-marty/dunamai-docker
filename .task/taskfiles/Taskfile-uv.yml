@@ -25,7 +25,7 @@ tasks:
     desc: "Lock the uv environment"
     internal: true
     deps:
-      - uv:install
+      - install
     cmds:
       - "{{.UV}} lock"
     sources:
@@ -33,11 +33,11 @@ tasks:
     generates:
       - "uv.lock"
 
-  env:
+  sync:
     desc: "Sync the uv environment"
     internal: true
     deps: 
-      - uv:lock
+      - lock
     cmds:
       - "{{.UV}} sync --frozen"
       - md5sum uv.lock >.venv/uv.lock.md5 

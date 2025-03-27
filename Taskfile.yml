@@ -15,7 +15,7 @@ tasks:
   version:
     desc: "Compute the version of the project"
     deps:
-      - uv:env
+      - uv:sync
     silent: true
     cmds:
       - "{{.UV}} run dunamai from any --style semver |sed 's/+/_/g'"
@@ -28,18 +28,18 @@ tasks:
   install:
     desc: "Install the venv" 
     deps:
-      - uv:env
+      - uv:sync
 
   build:
     desc: "Build the docker image"
     deps:
-      - uv:env
+      - uv:sync
     cmds:
       - docker build -t {{.IMAGE}} .
 
   test:
     desc: "Test the docker image"
     deps:
-      - uv:env
+      - uv:sync
     cmds:
       - docker run --rm -v `pwd`:/code {{.IMAGE}} from git --path /code
