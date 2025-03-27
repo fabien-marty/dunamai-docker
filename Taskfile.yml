@@ -7,8 +7,8 @@ includes:
     flatten: true
 
 vars:
-  UV: "{{.TASKFILE_DIR}}/.tmp/bin/uv"
-  IMAGE: "docker.io/library/dunamai"
+  DEFAULT_IMAGE: 'docker.io/library/dunamai'
+  IMAGE: '{{ .IMAGE | default .DEFAULT_IMAGE }}'
 
 tasks:
 
